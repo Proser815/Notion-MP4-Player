@@ -228,17 +228,17 @@
             color: var(--text-main);
         }
 
-        /* Floating Minimize Button (Visible ONLY in Fullscreen Mode) */
+        /* Floating Minimize Button (Fades out when mouse stops moving or unhovers) */
         .floating-minimize-btn {
             position: fixed;
-            top: 16px;
-            right: 16px;
-            background: rgba(28, 28, 30, 0.6);
+            top: 20px;
+            right: 20px;
+            background: rgba(28, 28, 30, 0.75);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 6px 12px;
+            padding: 8px 16px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 500;
@@ -246,12 +246,12 @@
             z-index: 9999;
             opacity: 0;
             pointer-events: none;
-            transform: translateY(-10px);
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transform: translateY(-8px);
+            transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
         }
 
         .floating-minimize-btn:hover {
-            background: rgba(44, 44, 46, 0.8);
+            background: rgba(44, 44, 46, 0.95);
             transform: scale(1.05);
         }
 
@@ -300,7 +300,8 @@
             object-fit: contain;
         }
 
-        body.fullscreen-mode .floating-minimize-btn {
+        /* Active class controlled by JS mouse movement */
+        body.fullscreen-mode.show-controls .floating-minimize-btn {
             opacity: 1;
             pointer-events: auto;
             transform: translateY(0);
@@ -364,6 +365,7 @@
         const htmlElement = document.documentElement;
 
         let activeSourceType = 'none';
+        let mouseTimer = null;
 
         const translations = {
             en: { title: "Player", desc: "Paste direct video link (.mp4/.webm) or pick a local device file.", load: "Load", file: "File", none: "No video", custom: "Stream", expand: "Expand", collapse: "Minimize" },
@@ -400,11 +402,26 @@
 
         const toggleFullscreen = () => {
             document.body.classList.toggle('fullscreen-mode');
+            if (!document.body.classList.contains('fullscreen-mode')) {
+                document.body.classList.remove('show-controls');
+            }
             updateUI();
         };
 
         expandBtn.onclick = toggleFullscreen;
         floatingMinimizeBtn.onclick = toggleFullscreen;
+
+        // Auto-hide mouse movement handler for fullscreen mode
+        document.addEventListener('mousemove', () => {
+            if (!document.body.classList.contains('fullscreen-mode')) return;
+
+            document.body.classList.add('show-controls');
+            clearTimeout(mouseTimer);
+
+            mouseTimer = setTimeout(() => {
+                document.body.classList.remove('show-controls');
+            }, 2000); // Hides automatically after 2 seconds of inactivity
+        });
 
         loadUrlBtn.onclick = () => {
             const url = videoUrlInput.value.trim();
