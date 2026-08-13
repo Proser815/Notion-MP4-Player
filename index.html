@@ -14,7 +14,7 @@
             --accent-hover: #005ec4;
             --text-main: #1d1d1f;
             --text-muted: #86868b;
-            --radius: 14px;
+            --radius: 16px;
             --shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
             --transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
         }
@@ -48,7 +48,7 @@
             max-width: 440px;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
         }
 
         .header-row {
@@ -74,8 +74,8 @@
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 3px 7px;
-            border-radius: 8px;
+            padding: 3px 8px;
+            border-radius: 10px;
             font-size: 9px;
             font-weight: 500;
             cursor: pointer;
@@ -92,7 +92,7 @@
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 5px 9px;
+            padding: 6px 10px;
             box-shadow: var(--shadow);
             transition: var(--transition);
         }
@@ -108,10 +108,10 @@
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 5px 7px;
+            padding: 6px 8px;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             box-shadow: var(--shadow);
             transition: var(--transition);
         }
@@ -122,8 +122,8 @@
             background: var(--bg-base);
             border: 1px solid transparent;
             color: var(--text-main);
-            padding: 4px 7px;
-            border-radius: 8px;
+            padding: 4px 8px;
+            border-radius: 10px;
             font-size: 9px;
             outline: none;
             transition: var(--transition);
@@ -139,8 +139,8 @@
             background: var(--accent);
             color: white;
             border: none;
-            padding: 4px 8px;
-            border-radius: 8px;
+            padding: 4px 9px;
+            border-radius: 10px;
             font-weight: 500;
             cursor: pointer;
             font-size: 9px;
@@ -180,8 +180,11 @@
         }
 
         .video-info {
-            padding: 4px 8px;
+            padding: 5px 9px;
             border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             transition: var(--transition);
         }
 
@@ -192,6 +195,24 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            flex: 1;
+        }
+
+        .fullscreen-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 9px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 6px;
+            transition: var(--transition);
+        }
+
+        .fullscreen-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-main);
         }
     </style>
 </head>
@@ -228,10 +249,11 @@
             </label>
         </div>
 
-        <div class="player-wrapper">
+        <div class="player-wrapper" id="playerWrapper">
             <video id="mainVideoPlayer" controls playsinline></video>
             <div class="video-info">
                 <div class="video-title" id="currentVideoTitle">No video</div>
+                <button class="fullscreen-btn" id="expandBtn">Expand</button>
             </div>
         </div>
     </div>
@@ -244,19 +266,20 @@
         const localFileInput = document.getElementById('localFileInput');
         const themeToggleBtn = document.getElementById('themeToggleBtn');
         const langSelect = document.getElementById('langSelect');
+        const expandBtn = document.getElementById('expandBtn');
         const htmlElement = document.documentElement;
 
         let activeSourceType = 'none';
 
         const translations = {
-            en: { title: "Player", desc: "Paste direct video link (.mp4/.webm) or pick a local device file.", load: "Load", file: "File", none: "No video", custom: "Stream" },
-            zh: { title: "播放器", desc: "粘贴直接视频链接 (.mp4/.webm) 或选择本地文件。", load: "加载", file: "文件", none: "无视频", custom: "流" },
-            ja: { title: "プレーヤー", desc: "直接リンク (.mp4/.webm) を貼り付けるかファイルを選択。", load: "読込", file: "ファイル", none: "動画なし", custom: "ストリーム" },
-            de: { title: "Player", desc: "Direkten Link (.mp4/.webm) einfügen oder lokale Datei wählen.", load: "Laden", file: "Datei", none: "Kein Video", custom: "Stream" },
-            ko: { title: "플레이어", desc: "직접 비디오 링크(.mp4/.webm)를 붙여넣거나 로컬 파일을 선택하세요.", load: "로드", file: "파일", none: "비디오 없음", custom: "스트림" },
-            fr: { title: "Lecteur", desc: "Collez un lien direct (.mp4/.webm) ou choisissez un fichier.", load: "Charger", file: "Fichier", none: "Aucune vidéo", custom: "Flux" },
-            it: { title: "Player", desc: "Incolla un link diretto (.mp4/.webm) o seleziona un file locale.", load: "Carica", file: "File", none: "Nessun video", custom: "Flusso" },
-            fa: { title: "پخش کننده", desc: "لینک مستقیم (.mp4/.webm) را وارد کنید یا فایل انتخاب کنید.", load: "بارگذاری", file: "فایل", none: "ویدیویی نیست", custom: "جریان" }
+            en: { title: "Player", desc: "Paste direct video link (.mp4/.webm) or pick a local device file.", load: "Load", file: "File", none: "No video", custom: "Stream", expand: "Expand", collapse: "Minimize" },
+            zh: { title: "播放器", desc: "粘贴直接视频链接 (.mp4/.webm) 或选择本地文件。", load: "加载", file: "文件", none: "无视频", custom: "流", expand: "全屏", collapse: "收起" },
+            ja: { title: "プレーヤー", desc: "直接リンク (.mp4/.webm) を貼り付けるかファイルを選択。", load: "読込", file: "ファイル", none: "動画なし", custom: "ストリーム", expand: "拡大", collapse: "戻す" },
+            de: { title: "Player", desc: "Direkten Link (.mp4/.webm) einfügen oder lokale Datei wählen.", load: "Laden", file: "Datei", none: "Kein Video", custom: "Stream", expand: "Vollbild", collapse: "Verkleinern" },
+            ko: { title: "플레이어", desc: "직접 비디오 링크(.mp4/.webm)를 붙여넣거나 로컬 파일을 선택하세요.", load: "로드", file: "파일", none: "비디오 없음", custom: "스트림", expand: "확대", collapse: "축소" },
+            fr: { title: "Lecteur", desc: "Collez un lien direct (.mp4/.webm) ou choisissez un fichier.", load: "Charger", file: "Fichier", none: "Aucune vidéo", custom: "Flux", expand: "Agrandir", collapse: "Réduire" },
+            it: { title: "Player", desc: "Incolla un link diretto (.mp4/.webm) o seleziona un file locale.", load: "Carica", file: "File", none: "Nessun video", custom: "Flusso", expand: "Espandi", collapse: "Riduci" },
+            fa: { title: "پخش کننده", desc: "لینک مستقیم (.mp4/.webm) را وارد کنید یا فایل انتخاب کنید.", load: "بارگذاری", file: "فایل", none: "ویدیویی نیست", custom: "جریان", expand: "بزرگ", collapse: "کوچک" }
         };
 
         function updateUI() {
@@ -267,6 +290,7 @@
             document.getElementById('infoDesc').textContent = t.desc;
             loadUrlBtn.textContent = t.load;
             document.getElementById('labelBrowse').childNodes[0].nodeValue = t.file + " ";
+            expandBtn.textContent = document.body.classList.contains('fullscreen-mode') ? t.collapse : t.expand;
 
             if (activeSourceType === 'none') videoTitle.textContent = t.none;
             else if (activeSourceType === 'custom') videoTitle.textContent = t.custom;
@@ -275,6 +299,33 @@
         langSelect.onchange = updateUI;
         themeToggleBtn.onclick = () => {
             htmlElement.setAttribute('data-theme', htmlElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+        };
+
+        expandBtn.onclick = () => {
+            document.body.classList.toggle('fullscreen-mode');
+            const isFull = document.body.classList.contains('fullscreen-mode');
+            const dash = document.querySelector('.dashboard');
+            
+            if (isFull) {
+                dash.style.maxWidth = '100vw';
+                dash.style.height = '100vh';
+                dash.style.padding = '0';
+                document.body.style.padding = '0';
+                document.getElementById('playerWrapper').style.flex = '1';
+                document.getElementById('playerWrapper').style.borderRadius = '0';
+                videoPlayer.style.height = '100%';
+                videoPlayer.style.aspectRatio = 'unset';
+            } else {
+                dash.style.maxWidth = '440px';
+                dash.style.height = 'auto';
+                dash.style.padding = '0';
+                document.body.style.padding = '4px';
+                document.getElementById('playerWrapper').style.flex = 'unset';
+                document.getElementById('playerWrapper').style.borderRadius = 'var(--radius)';
+                videoPlayer.style.height = 'auto';
+                videoPlayer.style.aspectRatio = '16/9';
+            }
+            updateUI();
         };
 
         loadUrlBtn.onclick = () => {
