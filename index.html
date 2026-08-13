@@ -3,130 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clean Video Dashboard</title>
+    <title>Compact iOS Video Player</title>
     <style>
         :root {
-            --bg-base: #f2f2f7;
+            --bg-base: #f5f5f7;
             --bg-surface: #ffffff;
-            --bg-hover: #f5f5f7;
-            --border-color: #e5e5ea;
+            --bg-hover: #e8e8ed;
+            --border-color: #d2d2d7;
             --accent: #007aff;
             --accent-hover: #005ec4;
-            --text-main: #1c1c1e;
-            --text-muted: #8e8e93;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            --text-main: #1d1d1f;
+            --text-muted: #86868b;
+            --radius: 12px;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
         }
 
         [data-theme="dark"] {
-            --bg-base: #09090b;
-            --bg-surface: #121216;
-            --bg-hover: #1c1c24;
-            --border-color: #27272a;
+            --bg-base: #000000;
+            --bg-surface: #1c1c1e;
+            --bg-hover: #2c2c2e;
+            --border-color: #38383a;
             --accent: #0a84ff;
             --accent-hover: #0062cc;
-            --text-main: #f4f4f5;
-            --text-muted: #a1a1aa;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            --text-main: #f5f5f7;
+            --text-muted: #98989d;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
             background-color: var(--bg-base);
             color: var(--text-main);
             margin: 0;
-            padding: 24px;
+            padding: 12px;
             display: flex;
             justify-content: center;
             -webkit-font-smoothing: antialiased;
-            transition: background 0.3s ease, color 0.3s ease;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
         .dashboard {
             width: 100%;
-            max-width: 650px;
+            max-width: 500px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 10px;
         }
 
+        /* Compact Header */
         .header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 4px;
         }
 
         h1 {
-            font-size: 20px;
+            font-size: 15px;
             font-weight: 600;
             margin: 0;
-            letter-spacing: -0.5px;
-            color: var(--text-main);
+            letter-spacing: -0.2px;
         }
 
         .header-controls {
             display: flex;
-            gap: 8px;
-            align-items: center;
+            gap: 6px;
         }
 
         select, .theme-btn {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 6px 10px;
+            padding: 4px 8px;
             border-radius: 8px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
             cursor: pointer;
-            box-shadow: var(--shadow);
             outline: none;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
         }
 
         select:hover, .theme-btn:hover {
             background: var(--bg-hover);
-            border-color: var(--accent);
         }
 
+        /* Minimal Instructions */
         .instructions-card {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 14px 16px;
+            border-radius: var(--radius);
+            padding: 10px 12px;
             box-shadow: var(--shadow);
         }
 
-        .instructions-title {
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-        }
-
         .instructions-text {
-            font-size: 13px;
-            color: var(--text-main);
-            line-height: 1.4;
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.35;
             margin: 0;
         }
 
+        /* Input Controls Layout */
         .controls-container {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
         }
 
         .control-card {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 12px 16px;
+            border-radius: var(--radius);
+            padding: 8px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            gap: 8px;
             box-shadow: var(--shadow);
         }
 
@@ -135,11 +127,11 @@
             background: var(--bg-base);
             border: 1px solid transparent;
             color: var(--text-main);
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-size: 13px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 11px;
             outline: none;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
         }
 
         input[type="text"]:focus {
@@ -151,13 +143,13 @@
             background: var(--accent);
             color: white;
             border: none;
-            padding: 9px 16px;
-            border-radius: 10px;
+            padding: 6px 12px;
+            border-radius: 8px;
             font-weight: 500;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 11px;
             text-align: center;
-            transition: background 0.2s ease;
+            transition: background 0.15s ease;
             white-space: nowrap;
         }
 
@@ -170,16 +162,17 @@
         }
 
         .control-label {
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 500;
             color: var(--text-muted);
             white-space: nowrap;
         }
 
+        /* Ultra-Clean Player */
         .player-wrapper {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
+            border-radius: var(--radius);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -194,14 +187,17 @@
         }
 
         .video-info {
-            padding: 14px 16px;
+            padding: 8px 12px;
             border-top: 1px solid var(--border-color);
         }
 
         .video-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-main);
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
 </head>
@@ -209,40 +205,39 @@
 
     <div class="dashboard">
         <div class="header-row">
-            <h1 id="appTitle">My Video Dashboard</h1>
+            <h1 id="appTitle">Video Player</h1>
             <div class="header-controls">
-                <select id="langSelect" aria-label="Select Language">
-                    <option value="en">English</option>
-                    <option value="zh">中文</option>
-                    <option value="ja">日本語</option>
-                    <option value="de">Deutsch</option>
-                    <option value="ko">한국어</option>
-                    <option value="fr">Français</option>
-                    <option value="it">Italiano</option>
-                    <option value="fa">فارسی</option>
+                <select id="langSelect" aria-label="Language">
+                    <option value="en">EN</option>
+                    <option value="zh">中</option>
+                    <option value="ja">日</option>
+                    <option value="de">DE</option>
+                    <option value="ko">한</option>
+                    <option value="fr">FR</option>
+                    <option value="it">IT</option>
+                    <option value="fa">فا</option>
                 </select>
-                <button class="theme-btn" id="themeToggleBtn">Dark Mode</button>
+                <button class="theme-btn" id="themeToggleBtn">Theme</button>
             </div>
         </div>
 
         <div class="instructions-card">
-            <div class="instructions-title" id="instTitle">Instructions</div>
             <p class="instructions-text" id="instText">
-                Paste a direct video link (ending in .mp4 or .webm) into the stream box and click Load Link, or pick a video file directly from your device.
+                Paste a direct .mp4/.webm link or browse a file from your device.
             </p>
         </div>
 
         <div class="controls-container">
             <div class="control-card">
-                <span class="control-label" id="labelStream">URL Stream:</span>
-                <input type="text" id="videoUrlInput" placeholder="Paste direct .mp4 link..." />
-                <button class="action-btn" id="loadUrlBtn">Load Link</button>
+                <span class="control-label" id="labelStream">URL</span>
+                <input type="text" id="videoUrlInput" placeholder="Paste link..." />
+                <button class="action-btn" id="loadUrlBtn">Load</button>
             </div>
 
             <div class="control-card">
-                <span class="control-label" id="fileStatusText">Device File:</span>
+                <span class="control-label" id="fileStatusText">File</span>
                 <label class="file-label" id="labelBrowse">
-                    Browse File
+                    Browse
                     <input type="file" id="localFileInput" accept="video/*">
                 </label>
             </div>
@@ -267,130 +262,38 @@
         const langSelect = document.getElementById('langSelect');
         const htmlElement = document.documentElement;
 
-        let activeSourceType = 'none'; // 'none', 'custom', or 'local'
-        let currentFileName = '';
+        let activeSourceType = 'none';
 
         const translations = {
-            en: {
-                title: "My Video Dashboard",
-                instTitle: "Instructions",
-                instText: "Paste a direct video link (ending in .mp4 or .webm) into the stream box and click Load Link, or pick a video file directly from your device.",
-                streamLabel: "URL Stream:",
-                loadBtn: "Load Link",
-                fileLabel: "Device File:",
-                browseBtn: "Browse File",
-                noVideo: "No video loaded",
-                customStream: "Custom Link Stream"
-            },
-            zh: {
-                title: "我的视频仪表盘",
-                instTitle: "使用说明",
-                instText: "将直接视频链接（以 .mp4 或 .webm 结尾）粘贴到流框中并点击加载链接，或直接从您的设备中选择视频文件。",
-                streamLabel: "网址流:",
-                loadBtn: "加载链接",
-                fileLabel: "设备文件:",
-                browseBtn: "浏览文件",
-                noVideo: "未加载视频",
-                customStream: "自定义链接流"
-            },
-            ja: {
-                title: "マイビデオダッシュボード",
-                instTitle: "説明",
-                instText: "直接動画リンク（.mp4 または .webm）をストリームボックスに貼り付けてリンクの読み込みをクリックするか、デバイスから直接動画ファイルを選択してください。",
-                streamLabel: "URL ストリーム:",
-                loadBtn: "リンク読込",
-                fileLabel: "デバイスファイル:",
-                browseBtn: "ファイル選択",
-                noVideo: "動画が読み込まれていません",
-                customStream: "カスタムリンクストリーム"
-            },
-            de: {
-                title: "Mein Video-Dashboard",
-                instTitle: "Anleitung",
-                instText: "Fügen Sie einen direkten Videolink (endet auf .mp4 oder .webm) in das Stream-Feld ein und klicken Sie auf Link laden oder wählen Sie eine Videodatei direkt von Ihrem Gerät aus.",
-                streamLabel: "URL-Stream:",
-                loadBtn: "Link laden",
-                fileLabel: "Gerätedatei:",
-                browseBtn: "Datei wählen",
-                noVideo: "Kein Video geladen",
-                customStream: "Benutzerdefinierter Link-Stream"
-            },
-            ko: {
-                title: "내 비디오 대시보드",
-                instTitle: "안내",
-                instText: "스트림 상자에 직접 비디오 링크(.mp4 또는 .webm으로 끝남)를 붙여넣고 링크 로드를 클릭하거나 기기에서 직접 비디오 파일을 선택하세요.",
-                streamLabel: "URL 스트림:",
-                loadBtn: "링크 로드",
-                fileLabel: "기기 파일:",
-                browseBtn: "파일 찾기",
-                noVideo: "로드된 비디오 없음",
-                customStream: "사용자 정의 링크 스트림"
-            },
-            fr: {
-                title: "Mon tableau de bord vidéo",
-                instTitle: "Instructions",
-                instText: "Collez un lien vidéo direct (se terminant par .mp4 ou .webm) dans le champ de flux et cliquez sur Charger le lien, ou choisissez un fichier vidéo directement depuis votre appareil.",
-                streamLabel: "Flux URL:",
-                loadBtn: "Charger",
-                fileLabel: "Fichier de l'appareil:",
-                browseBtn: "Parcourir",
-                noVideo: "Aucune vidéo chargée",
-                customStream: "Flux de lien personnalisé"
-            },
-            it: {
-                title: "Il mio Dashboard Video",
-                instTitle: "Istruzioni",
-                instText: "Incolla un link video diretto (che termina con .mp4 o .webm) nella casella dello streaming e fai clic su Carica Link, oppure seleziona un file video direttamente dal tuo dispositivo.",
-                streamLabel: "Flusso URL:",
-                loadBtn: "Carica Link",
-                fileLabel: "File Dispositivo:",
-                browseBtn: "Sfoglia",
-                noVideo: "Nessun video caricato",
-                customStream: "Flusso Link Personalizzato"
-            },
-            fa: {
-                title: "داشبورد ویدیوی من",
-                instTitle: "دستورالعمل‌ها",
-                instText: "یک لینک مستقیم ویدیو (که با .mp4 یا .webm تمام می شود) را در کادر استریم قرار دهید و روی بارگذاری لینک کلیک کنید، یا یک فایل ویدیویی را مستقیماً از دستگاه خود انتخاب کنید.",
-                streamLabel: "جریان URL:",
-                loadBtn: "بارگذاری لینک",
-                fileLabel: "فایل دستگاه:",
-                browseBtn: "انتخاب فایل",
-                noVideo: "ویدیویی بارگذاری نشده است",
-                customStream: "جریان لینک سفارشی"
-            }
+            en: { title: "Video Player", inst: "Paste a direct .mp4/.webm link or browse a file from your device.", url: "URL", load: "Load", file: "File", browse: "Browse", none: "No video loaded", custom: "Custom Stream" },
+            zh: { title: "视频播放器", inst: "粘贴直接的 .mp4/.webm 链接或从设备中选择文件。", url: "网址", load: "加载", file: "文件", browse: "浏览", none: "未加载视频", custom: "自定义流" },
+            ja: { title: "ビデオプレーヤー", inst: "直接リンクを貼り付けるか、ファイルを選択してください。", url: "URL", load: "読込", file: "ファイル", browse: "選択", none: "動画なし", custom: "カスタム" },
+            de: { title: "Video-Player", inst: "Link einfügen oder Datei vom Gerät auswählen.", url: "URL", load: "Laden", file: "Datei", browse: "Wählen", none: "Kein Video", custom: "Stream" },
+            ko: { title: "비디오 플레이어", inst: "링크를 붙여넣거나 기기에서 파일을 선택하세요.", url: "URL", load: "로드", file: "파일", browse: "찾기", none: "비디오 없음", custom: "스트림" },
+            fr: { title: "Lecteur Vidéo", inst: "Collez un lien direct ou parcourez un fichier.", url: "URL", load: "Charger", file: "Fichier", browse: "Parcourir", none: "Aucune vidéo", custom: "Flux" },
+            it: { title: "Lettore Video", inst: "Incolla un link diretto o sfoglia un file.", url: "URL", load: "Carica", file: "File", browse: "Sfoglia", none: "Nessun video", custom: "Flusso" },
+            fa: { title: "پخش کننده", inst: "لینک مستقیم را وارد کنید یا فایلی را انتخاب کنید.", url: "لینک", load: "بارگذاری", file: "فایل", browse: "انتخاب", none: "ویدیویی نیست", custom: "جریان سفارشی" }
         };
 
-        function updateUIStrings() {
+        function updateUI() {
             const lang = langSelect.value;
             const t = translations[lang] || translations.en;
             
             document.getElementById('appTitle').textContent = t.title;
-            document.getElementById('instTitle').textContent = t.instTitle;
-            document.getElementById('instText').textContent = t.instText;
-            document.getElementById('labelStream').textContent = t.streamLabel;
-            loadUrlBtn.textContent = t.loadBtn;
-            document.getElementById('labelBrowse').childNodes[0].nodeValue = t.browseBtn + " ";
-            
-            const currentTheme = htmlElement.getAttribute('data-theme');
-            themeToggleBtn.textContent = currentTheme === 'light' ? (lang === 'zh' ? '深色模式' : lang === 'ja' ? 'ダークモード' : lang === 'de' ? 'Dunkelmodus' : lang === 'ko' ? '다크 모드' : lang === 'fr' ? 'Mode Sombre' : lang === 'it' ? 'Modalità Scura' : lang === 'fa' ? 'حالت تاریک' : 'Dark Mode') : (lang === 'zh' ? '浅色模式' : lang === 'ja' ? 'ライトモード' : lang === 'de' ? 'Hellmodus' : lang === 'ko' ? '라이트 모드' : lang === 'fr' ? 'Mode Clair' : lang === 'it' ? 'Modalità Chiara' : lang === 'fa' ? 'حالت روشن' : 'Light Mode');
+            document.getElementById('instText').textContent = t.inst;
+            document.getElementById('labelStream').textContent = t.url;
+            loadUrlBtn.textContent = t.load;
+            fileStatusText.textContent = t.file;
+            document.getElementById('labelBrowse').childNodes[0].nodeValue = t.browse + " ";
 
-            if (activeSourceType === 'none') {
-                videoTitle.textContent = t.noVideo;
-            } else if (activeSourceType === 'custom') {
-                videoTitle.textContent = t.customStream;
-            } else if (activeSourceType === 'local') {
-                videoTitle.textContent = `Local File: ${currentFileName}`;
-                fileStatusText.textContent = `Loaded: ${currentFileName}`;
-            }
+            if (activeSourceType === 'none') videoTitle.textContent = t.none;
+            else if (activeSourceType === 'custom') videoTitle.textContent = t.custom;
+            else if (activeSourceType === 'local') videoTitle.textContent = fileStatusText.textContent;
         }
 
-        langSelect.onchange = updateUIStrings;
-
+        langSelect.onchange = updateUI;
         themeToggleBtn.onclick = () => {
-            const currentTheme = htmlElement.getAttribute('data-theme');
-            htmlElement.setAttribute('data-theme', currentTheme === 'light' ? 'dark' : 'light');
-            updateUIStrings();
+            htmlElement.setAttribute('data-theme', htmlElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
         };
 
         loadUrlBtn.onclick = () => {
@@ -398,19 +301,19 @@
             if (url) {
                 videoPlayer.src = url;
                 activeSourceType = 'custom';
-                updateUIStrings();
+                updateUI();
                 videoPlayer.load();
-                videoPlayer.play().catch(e => alert("Could not play video. Make sure it's a direct media link!"));
+                videoPlayer.play().catch(() => {});
             }
         };
 
-        localFileInput.onchange = (event) => {
-            const file = event.target.files[0];
+        localFileInput.onchange = (e) => {
+            const file = e.target.files[0];
             if (file) {
-                currentFileName = file.name;
                 activeSourceType = 'local';
+                fileStatusText.textContent = file.name;
                 videoPlayer.src = URL.createObjectURL(file);
-                updateUIStrings();
+                updateUI();
                 videoPlayer.load();
                 videoPlayer.play();
             }
