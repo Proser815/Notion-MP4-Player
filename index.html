@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compact iOS Video Player</title>
+    <title>Micro iOS Video Player</title>
     <style>
         :root {
             --bg-base: #f5f5f7;
@@ -14,8 +14,8 @@
             --accent-hover: #005ec4;
             --text-main: #1d1d1f;
             --text-muted: #86868b;
-            --radius: 12px;
-            --shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+            --radius: 8px;
+            --shadow: 0 1px 6px rgba(0, 0, 0, 0.03);
         }
 
         [data-theme="dark"] {
@@ -27,30 +27,28 @@
             --accent-hover: #0062cc;
             --text-main: #f5f5f7;
             --text-muted: #98989d;
-            --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+            --shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
             background-color: var(--bg-base);
             color: var(--text-main);
             margin: 0;
-            padding: 8px;
+            padding: 4px;
             display: flex;
             justify-content: center;
             -webkit-font-smoothing: antialiased;
-            transition: background 0.2s ease, color 0.2s ease;
         }
 
         .dashboard {
             width: 100%;
-            max-width: 480px;
+            max-width: 440px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
         }
 
-        /* Compact Header */
         .header-row {
             display: flex;
             justify-content: space-between;
@@ -59,7 +57,7 @@
         }
 
         h1 {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             margin: 0;
             letter-spacing: -0.2px;
@@ -67,51 +65,44 @@
 
         .header-controls {
             display: flex;
-            gap: 4px;
+            gap: 3px;
         }
 
         select, .theme-btn {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 2px 6px;
-            border-radius: 6px;
-            font-size: 10px;
+            padding: 1px 4px;
+            border-radius: 4px;
+            font-size: 9px;
             font-weight: 500;
             cursor: pointer;
             outline: none;
-            transition: all 0.15s ease;
         }
 
-        select:hover, .theme-btn:hover {
-            background: var(--bg-hover);
-        }
-
-        /* Micro Explanation / Guide */
         .info-bar {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 6px 10px;
+            padding: 4px 8px;
             box-shadow: var(--shadow);
         }
 
         .info-text {
-            font-size: 10px;
+            font-size: 9px;
             color: var(--text-muted);
-            line-height: 1.3;
+            line-height: 1.25;
             margin: 0;
         }
 
-        /* Control Card */
         .control-card {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 6px 8px;
+            padding: 4px 6px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             box-shadow: var(--shadow);
         }
 
@@ -121,11 +112,10 @@
             background: var(--bg-base);
             border: 1px solid transparent;
             color: var(--text-main);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 9px;
             outline: none;
-            transition: all 0.15s ease;
         }
 
         input[type="text"]:focus {
@@ -137,13 +127,11 @@
             background: var(--accent);
             color: white;
             border: none;
-            padding: 4px 8px;
-            border-radius: 6px;
+            padding: 3px 6px;
+            border-radius: 4px;
             font-weight: 500;
             cursor: pointer;
-            font-size: 10px;
-            text-align: center;
-            transition: background 0.15s ease;
+            font-size: 9px;
             white-space: nowrap;
         }
 
@@ -155,7 +143,6 @@
             display: none;
         }
 
-        /* Ultra-Clean Player */
         .player-wrapper {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
@@ -174,12 +161,12 @@
         }
 
         .video-info {
-            padding: 4px 8px;
+            padding: 3px 6px;
             border-top: 1px solid var(--border-color);
         }
 
         .video-title {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 500;
             color: var(--text-muted);
             white-space: nowrap;
@@ -192,7 +179,7 @@
 
     <div class="dashboard">
         <div class="header-row">
-            <h1 id="appTitle">Video Player</h1>
+            <h1 id="appTitle">Player</h1>
             <div class="header-controls">
                 <select id="langSelect" aria-label="Language">
                     <option value="en">EN</option>
@@ -209,13 +196,11 @@
         </div>
 
         <div class="info-bar">
-            <p class="info-text" id="infoDesc">
-                Paste a direct video link (.mp4/.webm) to load via URL, or select a file directly from your local device.
-            </p>
+            <p class="info-text" id="infoDesc">Paste direct video link (.mp4/.webm) or pick a local device file.</p>
         </div>
 
         <div class="control-card">
-            <input type="text" id="videoUrlInput" placeholder="Paste link..." />
+            <input type="text" id="videoUrlInput" placeholder="URL..." />
             <button class="action-btn" id="loadUrlBtn">Load</button>
             <label class="file-label" id="labelBrowse">
                 File
@@ -226,7 +211,7 @@
         <div class="player-wrapper">
             <video id="mainVideoPlayer" controls playsinline></video>
             <div class="video-info">
-                <div class="video-title" id="currentVideoTitle">No video loaded</div>
+                <div class="video-title" id="currentVideoTitle">No video</div>
             </div>
         </div>
     </div>
@@ -244,14 +229,14 @@
         let activeSourceType = 'none';
 
         const translations = {
-            en: { title: "Video Player", desc: "Paste a direct video link (.mp4/.webm) to load via URL, or select a file directly from your local device.", load: "Load", file: "File", none: "No video loaded", custom: "Custom Stream" },
-            zh: { title: "视频播放器", desc: "粘贴直接视频链接 (.mp4/.webm) 通过网址加载，或直接从本地设备中选择文件。", load: "加载", file: "文件", none: "未加载视频", custom: "自定义流" },
-            ja: { title: "ビデオプレーヤー", desc: "URLで読み込むための直接動画リンクを貼り付けるか、デバイスからファイルを選択してください。", load: "読込", file: "ファイル", none: "動画なし", custom: "カスタム" },
-            de: { title: "Video-Player", desc: "Direkten Videolink (.mp4/.webm) zum Laden per URL einfügen oder Datei vom Gerät auswählen.", load: "Laden", file: "Datei", none: "Kein Video", custom: "Stream" },
-            ko: { title: "비디오 플레이어", desc: "URL을 통해 로드할 직접 비디오 링크(.mp4/.webm)를 붙여넣거나 기기에서 파일을 선택하세요.", load: "로드", file: "파일", none: "비디오 없음", custom: "스트림" },
-            fr: { title: "Lecteur Vidéo", desc: "Collez un lien vidéo direct (.mp4/.webm) ou sélectionnez un fichier depuis votre appareil.", load: "Charger", file: "Fichier", none: "Aucune vidéo", custom: "Flux" },
-            it: { title: "Lettore Video", desc: "Incolla un link video diretto (.mp4/.webm) o seleziona un file dal tuo dispositivo.", load: "Carica", file: "File", none: "Nessun video", custom: "Flusso" },
-            fa: { title: "پخش کننده", desc: "لینک مستقیم ویدیو را وارد کنید یا فایلی را از دستگاه خود انتخاب کنید.", load: "بارگذاری", file: "فایل", none: "ویدیویی نیست", custom: "جریان سفارشی" }
+            en: { title: "Player", desc: "Paste direct video link (.mp4/.webm) or pick a local device file.", load: "Load", file: "File", none: "No video", custom: "Stream" },
+            zh: { title: "播放器", desc: "粘贴直接视频链接 (.mp4/.webm) 或选择本地文件。", load: "加载", file: "文件", none: "无视频", custom: "流" },
+            ja: { title: "プレーヤー", desc: "直接リンク (.mp4/.webm) を貼り付けるかファイルを選択。", load: "読込", file: "ファイル", none: "動画なし", custom: "ストリーム" },
+            de: { title: "Player", desc: "Direkten Link (.mp4/.webm) einfügen oder lokale Datei wählen.", load: "Laden", file: "Datei", none: "Kein Video", custom: "Stream" },
+            ko: { title: "플레이어", desc: "직접 비디오 링크(.mp4/.webm)를 붙여넣거나 로컬 파일을 선택하세요.", load: "로드", file: "파일", none: "비디오 없음", custom: "스트림" },
+            fr: { title: "Lecteur", desc: "Collez un lien direct (.mp4/.webm) ou choisissez un fichier.", load: "Charger", file: "Fichier", none: "Aucune vidéo", custom: "Flux" },
+            it: { title: "Player", desc: "Incolla un link diretto (.mp4/.webm) o seleziona un file locale.", load: "Carica", file: "File", none: "Nessun video", custom: "Flusso" },
+            fa: { title: "پخش کننده", desc: "لینک مستقیم (.mp4/.webm) را وارد کنید یا فایل انتخاب کنید.", load: "بارگذاری", file: "فایل", none: "ویدیویی نیست", custom: "جریان" }
         };
 
         function updateUI() {
