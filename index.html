@@ -3,35 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Micro iOS Video Player</title>
+    <title>Smooth Micro iOS Player</title>
     <style>
         :root {
             --bg-base: #f5f5f7;
             --bg-surface: #ffffff;
             --bg-hover: #e8e8ed;
-            --border-color: #d2d2d7;
+            --border-color: rgba(0, 0, 0, 0.08);
             --accent: #007aff;
             --accent-hover: #005ec4;
             --text-main: #1d1d1f;
             --text-muted: #86868b;
-            --radius: 8px;
+            --radius: 10px;
             --shadow: 0 1px 6px rgba(0, 0, 0, 0.03);
+            --transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         [data-theme="dark"] {
             --bg-base: #000000;
             --bg-surface: #1c1c1e;
             --bg-hover: #2c2c2e;
-            --border-color: #38383a;
+            --border-color: rgba(255, 255, 255, 0.12);
             --accent: #0a84ff;
             --accent-hover: #0062cc;
             --text-main: #f5f5f7;
             --text-muted: #98989d;
-            --shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+            --shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
             background-color: var(--bg-base);
             color: var(--text-main);
             margin: 0;
@@ -39,6 +40,7 @@
             display: flex;
             justify-content: center;
             -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .dashboard {
@@ -72,12 +74,18 @@
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 1px 4px;
-            border-radius: 4px;
+            padding: 2px 5px;
+            border-radius: 5px;
             font-size: 9px;
             font-weight: 500;
             cursor: pointer;
             outline: none;
+            transition: var(--transition);
+        }
+
+        select:hover, .theme-btn:hover {
+            background: var(--bg-hover);
+            transform: scale(1.02);
         }
 
         .info-bar {
@@ -86,6 +94,7 @@
             border-radius: var(--radius);
             padding: 4px 8px;
             box-shadow: var(--shadow);
+            transition: var(--transition);
         }
 
         .info-text {
@@ -104,6 +113,7 @@
             align-items: center;
             gap: 4px;
             box-shadow: var(--shadow);
+            transition: var(--transition);
         }
 
         input[type="text"] {
@@ -113,14 +123,16 @@
             border: 1px solid transparent;
             color: var(--text-main);
             padding: 3px 6px;
-            border-radius: 4px;
+            border-radius: 5px;
             font-size: 9px;
             outline: none;
+            transition: var(--transition);
         }
 
         input[type="text"]:focus {
             background: var(--bg-surface);
             border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.15);
         }
 
         .action-btn, .file-label {
@@ -128,15 +140,21 @@
             color: white;
             border: none;
             padding: 3px 6px;
-            border-radius: 4px;
+            border-radius: 5px;
             font-weight: 500;
             cursor: pointer;
             font-size: 9px;
             white-space: nowrap;
+            transition: var(--transition);
         }
 
         .action-btn:hover, .file-label:hover {
             background: var(--accent-hover);
+            transform: translateY(-0.5px);
+        }
+
+        .action-btn:active, .file-label:active {
+            transform: scale(0.96);
         }
 
         input[type="file"] {
@@ -151,6 +169,7 @@
             display: flex;
             flex-direction: column;
             box-shadow: var(--shadow);
+            transition: var(--transition);
         }
 
         video {
@@ -163,6 +182,7 @@
         .video-info {
             padding: 3px 6px;
             border-top: 1px solid var(--border-color);
+            transition: var(--transition);
         }
 
         .video-title {
