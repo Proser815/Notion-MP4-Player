@@ -180,6 +180,7 @@
             flex-direction: column;
             box-shadow: var(--shadow);
             transition: var(--transition);
+            position: relative;
         }
 
         video {
@@ -227,7 +228,38 @@
             color: var(--text-main);
         }
 
-        /* Full Webpage Mode (Hides everything else smoothly) */
+        /* Floating Minimize Button (Visible ONLY in Fullscreen Mode) */
+        .floating-minimize-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            background: rgba(28, 28, 30, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .floating-minimize-btn:hover {
+            background: rgba(44, 44, 46, 0.8);
+            transform: scale(1.05);
+        }
+
+        .floating-minimize-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Full Webpage Mode */
         body.fullscreen-mode {
             padding: 0;
         }
@@ -267,9 +299,17 @@
             aspect-ratio: unset;
             object-fit: contain;
         }
+
+        body.fullscreen-mode .floating-minimize-btn {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
+
+    <button class="floating-minimize-btn" id="floatingMinimizeBtn">Minimize</button>
 
     <div class="dashboard">
         <div class="header-row">
@@ -320,6 +360,7 @@
         const themeToggleBtn = document.getElementById('themeToggleBtn');
         const langSelect = document.getElementById('langSelect');
         const expandBtn = document.getElementById('expandBtn');
+        const floatingMinimizeBtn = document.getElementById('floatingMinimizeBtn');
         const htmlElement = document.documentElement;
 
         let activeSourceType = 'none';
@@ -343,7 +384,10 @@
             document.getElementById('infoDesc').textContent = t.desc;
             loadUrlBtn.textContent = t.load;
             document.getElementById('labelBrowse').childNodes[0].nodeValue = t.file + " ";
-            expandBtn.textContent = document.body.classList.contains('fullscreen-mode') ? t.collapse : t.expand;
+            
+            const isFull = document.body.classList.contains('fullscreen-mode');
+            expandBtn.textContent = isFull ? t.collapse : t.expand;
+            floatingMinimizeBtn.textContent = t.collapse;
 
             if (activeSourceType === 'none') videoTitle.textContent = t.none;
             else if (activeSourceType === 'custom') videoTitle.textContent = t.custom;
@@ -354,10 +398,13 @@
             htmlElement.setAttribute('data-theme', htmlElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
         };
 
-        expandBtn.onclick = () => {
+        const toggleFullscreen = () => {
             document.body.classList.toggle('fullscreen-mode');
             updateUI();
         };
+
+        expandBtn.onclick = toggleFullscreen;
+        floatingMinimizeBtn.onclick = toggleFullscreen;
 
         loadUrlBtn.onclick = () => {
             const url = videoUrlInput.value.trim();
