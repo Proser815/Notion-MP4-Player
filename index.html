@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Complete Video Dashboard</title>
+    <style>
+        :root {
+            --bg-base: #09090b;
+            --bg-surface: #121216;
+            --bg-hover: #1c1c24;
+            --border-color: #27272a;
+            --accent: #6366f1;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            margin: 0;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .dashboard {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin: 0 0 5px 0;
+            color: var(--text-main);
+        }
+
+        /* Control Bars Container */
+        .controls-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Input Bars */
+        .control-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: var(--bg-base);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent);
+        }
+
+        .action-btn, .file-label {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .action-btn:hover, .file-label:hover {
+            opacity: 0.9;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .control-label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Layout Grid */
+        .content-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .content-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Player Section */
+        .player-wrapper {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        video {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            outline: none;
+        }
+
+        .video-info {
+            padding: 16px;
+        }
+
+        .video-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        /* Sidebar Playlist */
+        .sidebar {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .playlist {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .playlist-item {
+            background: var(--bg-base);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .playlist-item:hover {
+            background: var(--bg-hover);
+            border-color: var(--accent);
+        }
+
+        .playlist-item.active {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: var(--accent);
+            color: #818cf8;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <h1>My Video Dashboard</h1>
+
+        <div class="controls-container">
+            <div class="control-card">
+                <span class="control-label">URL Stream:</span>
+                <input type="text" id="videoUrlInput" placeholder="Paste direct .mp4 link..." />
+                <button class="action-btn" id="loadUrlBtn">Load Link</button>
+            </div>
+
+            <div class="control-card">
+                <span class="control-label" id="fileStatusText">Device File:</span>
+                <label class="file-label">
+                    Browse File
+                    <input type="file" id="localFileInput" accept="video/*">
+                </label>
+            </div>
+        </div>
+
+        <div class="content-layout">
+            <div class="player-wrapper">
+                <video id="mainVideoPlayer" controls playsinline></video>
+                <div class="video-info">
+                    <div class="video-title" id="currentVideoTitle">Select a preset or load a source</div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="section-title">Presets</div>
+                <div class="playlist" id="playlistContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const videoPlayer = document.getElementById('mainVideoPlayer');
+        const videoTitle = document.getElementById('currentVideoTitle');
+        const playlistContainer = document.getElementById('playlistContainer');
+        const videoUrlInput = document.getElementById('videoUrlInput');
+        const loadUrlBtn = document.getElementById('loadUrlBtn');
+        const localFileInput = document.getElementById('localFileInput');
+        const fileStatusText = document.getElementById('fileStatusText');
+
+        // Sample presets
+        const samplePlaylist = [
+            { title: "Big Buck Bunny", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
+            { title: "Sample Video 2", url: "https://www.w3schools.com/html/movie.mp4" }
+        ];
+
+        // Build preset playlist UI
+        samplePlaylist.forEach((item, index) => {
+            const btn = document.createElement('button');
+            btn.className = `playlist-item ${index === 0 ? 'active' : ''}`;
+            btn.textContent = item.title;
+            
+            btn.onclick = () => {
+                document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
+                btn.classList.add('active');
+                
+                videoUrlInput.value = item.url;
+                videoPlayer.src = item.url;
+                videoTitle.textContent = item.title;
+                videoPlayer.load();
+                videoPlayer.play().catch(e => console.log("Auto-play prevented:", e));
+            };
+
+            playlistContainer.appendChild(btn);
+        });
+
+        // Initialize with the first sample
+        if (samplePlaylist.length > 0) {
+            videoPlayer.src = samplePlaylist[0].url;
+            videoTitle.textContent = samplePlaylist[0].title;
+            videoUrlInput.value = samplePlaylist[0].url;
+        }
+
+        // Load pasted link
+        loadUrlBtn.onclick = () => {
+            const url = videoUrlInput.value.trim();
+            if (url) {
+                videoPlayer.src = url;
+                videoTitle.textContent = "Custom Link Stream";
+                document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
+                videoPlayer.load();
+                videoPlayer.play().catch(e => alert("Could not play video. Make sure it's a direct media link!"));
+            }
+        };
+
+        // Load local file from computer
+        localFileInput.onchange = (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const fileURL = URL.createObjectURL(file);
+                videoPlayer.src = fileURL;
+                videoTitle.textContent = `Local File: ${file.name}`;
+                fileStatusText.textContent = `Loaded: ${file.name}`;
+                document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
+                videoPlayer.load();
+                videoPlayer.play();
+            }
+        };
+    </script>
+</body>
+</html>
