@@ -69,7 +69,6 @@
             align-items: center;
         }
 
-        /* Select and Button Styling */
         select, .theme-btn {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
@@ -89,7 +88,6 @@
             border-color: var(--accent);
         }
 
-        /* Instructions Card */
         .instructions-card {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
@@ -114,7 +112,6 @@
             margin: 0;
         }
 
-        /* Control Containers */
         .controls-container {
             display: flex;
             flex-direction: column;
@@ -161,6 +158,7 @@
             font-size: 13px;
             text-align: center;
             transition: background 0.2s ease;
+            white-space: nowrap;
         }
 
         .action-btn:hover, .file-label:hover {
@@ -175,9 +173,9 @@
             font-size: 13px;
             font-weight: 500;
             color: var(--text-muted);
+            white-space: nowrap;
         }
 
-        /* Player Section */
         .player-wrapper {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
@@ -213,7 +211,7 @@
         <div class="header-row">
             <h1 id="appTitle">My Video Dashboard</h1>
             <div class="header-controls">
-                <select id="langSelect">
+                <select id="langSelect" aria-label="Select Language">
                     <option value="en">English</option>
                     <option value="zh">中文</option>
                     <option value="ja">日本語</option>
@@ -269,7 +267,9 @@
         const langSelect = document.getElementById('langSelect');
         const htmlElement = document.documentElement;
 
-        // Translations dictionary
+        let activeSourceType = 'none'; // 'none', 'custom', or 'local'
+        let currentFileName = '';
+
         const translations = {
             en: {
                 title: "My Video Dashboard",
@@ -280,9 +280,7 @@
                 fileLabel: "Device File:",
                 browseBtn: "Browse File",
                 noVideo: "No video loaded",
-                customStream: "Custom Link Stream",
-                darkMode: "Dark Mode",
-                lightMode: "Light Mode"
+                customStream: "Custom Link Stream"
             },
             zh: {
                 title: "我的视频仪表盘",
@@ -293,9 +291,7 @@
                 fileLabel: "设备文件:",
                 browseBtn: "浏览文件",
                 noVideo: "未加载视频",
-                customStream: "自定义链接流",
-                darkMode: "深色模式",
-                lightMode: "浅色模式"
+                customStream: "自定义链接流"
             },
             ja: {
                 title: "マイビデオダッシュボード",
@@ -306,9 +302,7 @@
                 fileLabel: "デバイスファイル:",
                 browseBtn: "ファイル選択",
                 noVideo: "動画が読み込まれていません",
-                customStream: "カスタムリンクストリーム",
-                darkMode: "ダークモード",
-                lightMode: "ライトモード"
+                customStream: "カスタムリンクストリーム"
             },
             de: {
                 title: "Mein Video-Dashboard",
@@ -319,9 +313,7 @@
                 fileLabel: "Gerätedatei:",
                 browseBtn: "Datei wählen",
                 noVideo: "Kein Video geladen",
-                customStream: "Benutzerdefinierter Link-Stream",
-                darkMode: "Dunkelmodus",
-                lightMode: "Hellmodus"
+                customStream: "Benutzerdefinierter Link-Stream"
             },
             ko: {
                 title: "내 비디오 대시보드",
@@ -332,9 +324,7 @@
                 fileLabel: "기기 파일:",
                 browseBtn: "파일 찾기",
                 noVideo: "로드된 비디오 없음",
-                customStream: "사용자 정의 링크 스트림",
-                darkMode: "다크 모드",
-                lightMode: "라이트 모드"
+                customStream: "사용자 정의 링크 스트림"
             },
             fr: {
                 title: "Mon tableau de bord vidéo",
@@ -345,9 +335,7 @@
                 fileLabel: "Fichier de l'appareil:",
                 browseBtn: "Parcourir",
                 noVideo: "Aucune vidéo chargée",
-                customStream: "Flux de lien personnalisé",
-                darkMode: "Mode Sombre",
-                lightMode: "Mode Clair"
+                customStream: "Flux de lien personnalisé"
             },
             it: {
                 title: "Il mio Dashboard Video",
@@ -358,9 +346,7 @@
                 fileLabel: "File Dispositivo:",
                 browseBtn: "Sfoglia",
                 noVideo: "Nessun video caricato",
-                customStream: "Flusso Link Personalizzato",
-                darkMode: "Modalità Scura",
-                lightMode: "Modalità Chiara"
+                customStream: "Flusso Link Personalizzato"
             },
             fa: {
                 title: "داشبورد ویدیوی من",
@@ -371,62 +357,60 @@
                 fileLabel: "فایل دستگاه:",
                 browseBtn: "انتخاب فایل",
                 noVideo: "ویدیویی بارگذاری نشده است",
-                customStream: "جریان لینک سفارشی",
-                darkMode: "حالت تاریک",
-                lightMode: "حالت روشن"
+                customStream: "جریان لینک سفارشی"
             }
         };
 
-        function setLanguage(lang) {
+        function updateUIStrings() {
+            const lang = langSelect.value;
             const t = translations[lang] || translations.en;
+            
             document.getElementById('appTitle').textContent = t.title;
             document.getElementById('instTitle').textContent = t.instTitle;
             document.getElementById('instText').textContent = t.instText;
             document.getElementById('labelStream').textContent = t.streamLabel;
-            document.getElementById('loadUrlBtn').textContent = t.loadBtn;
-            document.getElementById('fileStatusText').textContent = t.fileLabel;
+            loadUrlBtn.textContent = t.loadBtn;
             document.getElementById('labelBrowse').childNodes[0].nodeValue = t.browseBtn + " ";
             
-            if (videoTitle.textContent === "No video loaded" || videoTitle.textContent === "未加载视频" || videoTitle.textContent === "動画が読み込まれていません" || videoTitle.textContent === "Kein Video geladen" || videoTitle.textContent === "로드된 비디오 없음" || videoTitle.textContent === "Aucune vidéo chargée" || videoTitle.textContent === "Nessun video caricato" || videoTitle.textContent === "ویدیویی بارگذاری نشده است") {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            themeToggleBtn.textContent = currentTheme === 'light' ? (lang === 'zh' ? '深色模式' : lang === 'ja' ? 'ダークモード' : lang === 'de' ? 'Dunkelmodus' : lang === 'ko' ? '다크 모드' : lang === 'fr' ? 'Mode Sombre' : lang === 'it' ? 'Modalità Scura' : lang === 'fa' ? 'حالت تاریک' : 'Dark Mode') : (lang === 'zh' ? '浅色模式' : lang === 'ja' ? 'ライトモード' : lang === 'de' ? 'Hellmodus' : lang === 'ko' ? '라이트 모드' : lang === 'fr' ? 'Mode Clair' : lang === 'it' ? 'Modalità Chiara' : lang === 'fa' ? 'حالت روشن' : 'Light Mode');
+
+            if (activeSourceType === 'none') {
                 videoTitle.textContent = t.noVideo;
+            } else if (activeSourceType === 'custom') {
+                videoTitle.textContent = t.customStream;
+            } else if (activeSourceType === 'local') {
+                videoTitle.textContent = `Local File: ${currentFileName}`;
+                fileStatusText.textContent = `Loaded: ${currentFileName}`;
             }
         }
 
-        langSelect.onchange = (e) => {
-            setLanguage(e.target.value);
-        };
+        langSelect.onchange = updateUIStrings;
 
-        // Theme Toggle Logic
         themeToggleBtn.onclick = () => {
             const currentTheme = htmlElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            htmlElement.setAttribute('data-theme', newTheme);
-            const lang = langSelect.value;
-            const t = translations[lang] || translations.en;
-            themeToggleBtn.textContent = newTheme === 'light' ? t.darkMode : t.lightMode;
+            htmlElement.setAttribute('data-theme', currentTheme === 'light' ? 'dark' : 'light');
+            updateUIStrings();
         };
 
-        // Load pasted link
         loadUrlBtn.onclick = () => {
             const url = videoUrlInput.value.trim();
-            const lang = langSelect.value;
-            const t = translations[lang] || translations.en;
             if (url) {
                 videoPlayer.src = url;
-                videoTitle.textContent = t.customStream;
+                activeSourceType = 'custom';
+                updateUIStrings();
                 videoPlayer.load();
                 videoPlayer.play().catch(e => alert("Could not play video. Make sure it's a direct media link!"));
             }
         };
 
-        // Load local file from computer
         localFileInput.onchange = (event) => {
             const file = event.target.files[0];
             if (file) {
-                const fileURL = URL.createObjectURL(file);
-                videoPlayer.src = fileURL;
-                videoTitle.textContent = `Local File: ${file.name}`;
-                fileStatusText.textContent = `Loaded: ${file.name}`;
+                currentFileName = file.name;
+                activeSourceType = 'local';
+                videoPlayer.src = URL.createObjectURL(file);
+                updateUIStrings();
                 videoPlayer.load();
                 videoPlayer.play();
             }
