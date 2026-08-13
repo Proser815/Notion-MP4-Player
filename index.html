@@ -35,7 +35,7 @@
             background-color: var(--bg-base);
             color: var(--text-main);
             margin: 0;
-            padding: 10px;
+            padding: 8px;
             display: flex;
             justify-content: center;
             -webkit-font-smoothing: antialiased;
@@ -44,10 +44,10 @@
 
         .dashboard {
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         /* Compact Header */
@@ -55,11 +55,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 4px;
+            padding: 0 2px;
         }
 
         h1 {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             margin: 0;
             letter-spacing: -0.2px;
@@ -67,16 +67,16 @@
 
         .header-controls {
             display: flex;
-            gap: 6px;
+            gap: 4px;
         }
 
         select, .theme-btn {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 3px 6px;
+            padding: 2px 6px;
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 500;
             cursor: pointer;
             outline: none;
@@ -87,12 +87,28 @@
             background: var(--bg-hover);
         }
 
+        /* Micro Explanation / Guide */
+        .info-bar {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 6px 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .info-text {
+            font-size: 10px;
+            color: var(--text-muted);
+            line-height: 1.3;
+            margin: 0;
+        }
+
         /* Control Card */
         .control-card {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 8px 10px;
+            padding: 6px 8px;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -105,9 +121,9 @@
             background: var(--bg-base);
             border: 1px solid transparent;
             color: var(--text-main);
-            padding: 5px 8px;
+            padding: 4px 8px;
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 10px;
             outline: none;
             transition: all 0.15s ease;
         }
@@ -121,11 +137,11 @@
             background: var(--accent);
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 4px 8px;
             border-radius: 6px;
             font-weight: 500;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
             text-align: center;
             transition: background 0.15s ease;
             white-space: nowrap;
@@ -158,12 +174,12 @@
         }
 
         .video-info {
-            padding: 6px 10px;
+            padding: 4px 8px;
             border-top: 1px solid var(--border-color);
         }
 
         .video-title {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 500;
             color: var(--text-muted);
             white-space: nowrap;
@@ -190,6 +206,12 @@
                 </select>
                 <button class="theme-btn" id="themeToggleBtn">Theme</button>
             </div>
+        </div>
+
+        <div class="info-bar">
+            <p class="info-text" id="infoDesc">
+                Paste a direct video link (.mp4/.webm) to load via URL, or select a file directly from your local device.
+            </p>
         </div>
 
         <div class="control-card">
@@ -222,14 +244,14 @@
         let activeSourceType = 'none';
 
         const translations = {
-            en: { title: "Video Player", load: "Load", file: "File", none: "No video loaded", custom: "Custom Stream" },
-            zh: { title: "视频播放器", load: "加载", file: "文件", none: "未加载视频", custom: "自定义流" },
-            ja: { title: "ビデオプレーヤー", load: "読込", file: "ファイル", none: "動画なし", custom: "カスタム" },
-            de: { title: "Video-Player", load: "Laden", file: "Datei", none: "Kein Video", custom: "Stream" },
-            ko: { title: "비디오 플레이어", load: "로드", file: "파일", none: "비디오 없음", custom: "스트림" },
-            fr: { title: "Lecteur Vidéo", load: "Charger", file: "Fichier", none: "Aucune vidéo", custom: "Flux" },
-            it: { title: "Lettore Video", load: "Carica", file: "File", none: "Nessun video", custom: "Flusso" },
-            fa: { title: "پخش کننده", load: "بارگذاری", file: "فایل", none: "ویدیویی نیست", custom: "جریان سفارشی" }
+            en: { title: "Video Player", desc: "Paste a direct video link (.mp4/.webm) to load via URL, or select a file directly from your local device.", load: "Load", file: "File", none: "No video loaded", custom: "Custom Stream" },
+            zh: { title: "视频播放器", desc: "粘贴直接视频链接 (.mp4/.webm) 通过网址加载，或直接从本地设备中选择文件。", load: "加载", file: "文件", none: "未加载视频", custom: "自定义流" },
+            ja: { title: "ビデオプレーヤー", desc: "URLで読み込むための直接動画リンクを貼り付けるか、デバイスからファイルを選択してください。", load: "読込", file: "ファイル", none: "動画なし", custom: "カスタム" },
+            de: { title: "Video-Player", desc: "Direkten Videolink (.mp4/.webm) zum Laden per URL einfügen oder Datei vom Gerät auswählen.", load: "Laden", file: "Datei", none: "Kein Video", custom: "Stream" },
+            ko: { title: "비디오 플레이어", desc: "URL을 통해 로드할 직접 비디오 링크(.mp4/.webm)를 붙여넣거나 기기에서 파일을 선택하세요.", load: "로드", file: "파일", none: "비디오 없음", custom: "스트림" },
+            fr: { title: "Lecteur Vidéo", desc: "Collez un lien vidéo direct (.mp4/.webm) ou sélectionnez un fichier depuis votre appareil.", load: "Charger", file: "Fichier", none: "Aucune vidéo", custom: "Flux" },
+            it: { title: "Lettore Video", desc: "Incolla un link video diretto (.mp4/.webm) o seleziona un file dal tuo dispositivo.", load: "Carica", file: "File", none: "Nessun video", custom: "Flusso" },
+            fa: { title: "پخش کننده", desc: "لینک مستقیم ویدیو را وارد کنید یا فایلی را از دستگاه خود انتخاب کنید.", load: "بارگذاری", file: "فایل", none: "ویدیویی نیست", custom: "جریان سفارشی" }
         };
 
         function updateUI() {
@@ -237,6 +259,7 @@
             const t = translations[lang] || translations.en;
             
             document.getElementById('appTitle').textContent = t.title;
+            document.getElementById('infoDesc').textContent = t.desc;
             loadUrlBtn.textContent = t.load;
             document.getElementById('labelBrowse').childNodes[0].nodeValue = t.file + " ";
 
