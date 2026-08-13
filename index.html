@@ -63,21 +63,28 @@
             color: var(--text-main);
         }
 
-        /* Theme Toggle Button */
-        .theme-btn {
+        .header-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* Select and Button Styling */
+        select, .theme-btn {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 6px 12px;
+            padding: 6px 10px;
             border-radius: 8px;
             font-size: 12px;
             font-weight: 500;
             cursor: pointer;
             box-shadow: var(--shadow);
+            outline: none;
             transition: all 0.2s ease;
         }
 
-        .theme-btn:hover {
+        select:hover, .theme-btn:hover {
             background: var(--bg-hover);
             border-color: var(--accent);
         }
@@ -204,27 +211,39 @@
 
     <div class="dashboard">
         <div class="header-row">
-            <h1>My Video Dashboard</h1>
-            <button class="theme-btn" id="themeToggleBtn">Switch Theme</button>
+            <h1 id="appTitle">My Video Dashboard</h1>
+            <div class="header-controls">
+                <select id="langSelect">
+                    <option value="en">English</option>
+                    <option value="zh">中文</option>
+                    <option value="ja">日本語</option>
+                    <option value="de">Deutsch</option>
+                    <option value="ko">한국어</option>
+                    <option value="fr">Français</option>
+                    <option value="it">Italiano</option>
+                    <option value="fa">فارسی</option>
+                </select>
+                <button class="theme-btn" id="themeToggleBtn">Dark Mode</button>
+            </div>
         </div>
 
         <div class="instructions-card">
-            <div class="instructions-title">Instructions</div>
-            <p class="instructions-text">
-                Paste a direct video link (ending in .mp4 or .webm) into the stream box and click <strong>Load Link</strong>, or pick a video file directly from your device.
+            <div class="instructions-title" id="instTitle">Instructions</div>
+            <p class="instructions-text" id="instText">
+                Paste a direct video link (ending in .mp4 or .webm) into the stream box and click Load Link, or pick a video file directly from your device.
             </p>
         </div>
 
         <div class="controls-container">
             <div class="control-card">
-                <span class="control-label">URL Stream:</span>
+                <span class="control-label" id="labelStream">URL Stream:</span>
                 <input type="text" id="videoUrlInput" placeholder="Paste direct .mp4 link..." />
                 <button class="action-btn" id="loadUrlBtn">Load Link</button>
             </div>
 
             <div class="control-card">
                 <span class="control-label" id="fileStatusText">Device File:</span>
-                <label class="file-label">
+                <label class="file-label" id="labelBrowse">
                     Browse File
                     <input type="file" id="localFileInput" accept="video/*">
                 </label>
@@ -247,25 +266,154 @@
         const localFileInput = document.getElementById('localFileInput');
         const fileStatusText = document.getElementById('fileStatusText');
         const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const langSelect = document.getElementById('langSelect');
         const htmlElement = document.documentElement;
+
+        // Translations dictionary
+        const translations = {
+            en: {
+                title: "My Video Dashboard",
+                instTitle: "Instructions",
+                instText: "Paste a direct video link (ending in .mp4 or .webm) into the stream box and click Load Link, or pick a video file directly from your device.",
+                streamLabel: "URL Stream:",
+                loadBtn: "Load Link",
+                fileLabel: "Device File:",
+                browseBtn: "Browse File",
+                noVideo: "No video loaded",
+                customStream: "Custom Link Stream",
+                darkMode: "Dark Mode",
+                lightMode: "Light Mode"
+            },
+            zh: {
+                title: "我的视频仪表盘",
+                instTitle: "使用说明",
+                instText: "将直接视频链接（以 .mp4 或 .webm 结尾）粘贴到流框中并点击加载链接，或直接从您的设备中选择视频文件。",
+                streamLabel: "网址流:",
+                loadBtn: "加载链接",
+                fileLabel: "设备文件:",
+                browseBtn: "浏览文件",
+                noVideo: "未加载视频",
+                customStream: "自定义链接流",
+                darkMode: "深色模式",
+                lightMode: "浅色模式"
+            },
+            ja: {
+                title: "マイビデオダッシュボード",
+                instTitle: "説明",
+                instText: "直接動画リンク（.mp4 または .webm）をストリームボックスに貼り付けてリンクの読み込みをクリックするか、デバイスから直接動画ファイルを選択してください。",
+                streamLabel: "URL ストリーム:",
+                loadBtn: "リンク読込",
+                fileLabel: "デバイスファイル:",
+                browseBtn: "ファイル選択",
+                noVideo: "動画が読み込まれていません",
+                customStream: "カスタムリンクストリーム",
+                darkMode: "ダークモード",
+                lightMode: "ライトモード"
+            },
+            de: {
+                title: "Mein Video-Dashboard",
+                instTitle: "Anleitung",
+                instText: "Fügen Sie einen direkten Videolink (endet auf .mp4 oder .webm) in das Stream-Feld ein und klicken Sie auf Link laden oder wählen Sie eine Videodatei direkt von Ihrem Gerät aus.",
+                streamLabel: "URL-Stream:",
+                loadBtn: "Link laden",
+                fileLabel: "Gerätedatei:",
+                browseBtn: "Datei wählen",
+                noVideo: "Kein Video geladen",
+                customStream: "Benutzerdefinierter Link-Stream",
+                darkMode: "Dunkelmodus",
+                lightMode: "Hellmodus"
+            },
+            ko: {
+                title: "내 비디오 대시보드",
+                instTitle: "안내",
+                instText: "스트림 상자에 직접 비디오 링크(.mp4 또는 .webm으로 끝남)를 붙여넣고 링크 로드를 클릭하거나 기기에서 직접 비디오 파일을 선택하세요.",
+                streamLabel: "URL 스트림:",
+                loadBtn: "링크 로드",
+                fileLabel: "기기 파일:",
+                browseBtn: "파일 찾기",
+                noVideo: "로드된 비디오 없음",
+                customStream: "사용자 정의 링크 스트림",
+                darkMode: "다크 모드",
+                lightMode: "라이트 모드"
+            },
+            fr: {
+                title: "Mon tableau de bord vidéo",
+                instTitle: "Instructions",
+                instText: "Collez un lien vidéo direct (se terminant par .mp4 ou .webm) dans le champ de flux et cliquez sur Charger le lien, ou choisissez un fichier vidéo directement depuis votre appareil.",
+                streamLabel: "Flux URL:",
+                loadBtn: "Charger",
+                fileLabel: "Fichier de l'appareil:",
+                browseBtn: "Parcourir",
+                noVideo: "Aucune vidéo chargée",
+                customStream: "Flux de lien personnalisé",
+                darkMode: "Mode Sombre",
+                lightMode: "Mode Clair"
+            },
+            it: {
+                title: "Il mio Dashboard Video",
+                instTitle: "Istruzioni",
+                instText: "Incolla un link video diretto (che termina con .mp4 o .webm) nella casella dello streaming e fai clic su Carica Link, oppure seleziona un file video direttamente dal tuo dispositivo.",
+                streamLabel: "Flusso URL:",
+                loadBtn: "Carica Link",
+                fileLabel: "File Dispositivo:",
+                browseBtn: "Sfoglia",
+                noVideo: "Nessun video caricato",
+                customStream: "Flusso Link Personalizzato",
+                darkMode: "Modalità Scura",
+                lightMode: "Modalità Chiara"
+            },
+            fa: {
+                title: "داشبورد ویدیوی من",
+                instTitle: "دستورالعمل‌ها",
+                instText: "یک لینک مستقیم ویدیو (که با .mp4 یا .webm تمام می شود) را در کادر استریم قرار دهید و روی بارگذاری لینک کلیک کنید، یا یک فایل ویدیویی را مستقیماً از دستگاه خود انتخاب کنید.",
+                streamLabel: "جریان URL:",
+                loadBtn: "بارگذاری لینک",
+                fileLabel: "فایل دستگاه:",
+                browseBtn: "انتخاب فایل",
+                noVideo: "ویدیویی بارگذاری نشده است",
+                customStream: "جریان لینک سفارشی",
+                darkMode: "حالت تاریک",
+                lightMode: "حالت روشن"
+            }
+        };
+
+        function setLanguage(lang) {
+            const t = translations[lang] || translations.en;
+            document.getElementById('appTitle').textContent = t.title;
+            document.getElementById('instTitle').textContent = t.instTitle;
+            document.getElementById('instText').textContent = t.instText;
+            document.getElementById('labelStream').textContent = t.streamLabel;
+            document.getElementById('loadUrlBtn').textContent = t.loadBtn;
+            document.getElementById('fileStatusText').textContent = t.fileLabel;
+            document.getElementById('labelBrowse').childNodes[0].nodeValue = t.browseBtn + " ";
+            
+            if (videoTitle.textContent === "No video loaded" || videoTitle.textContent === "未加载视频" || videoTitle.textContent === "動画が読み込まれていません" || videoTitle.textContent === "Kein Video geladen" || videoTitle.textContent === "로드된 비디오 없음" || videoTitle.textContent === "Aucune vidéo chargée" || videoTitle.textContent === "Nessun video caricato" || videoTitle.textContent === "ویدیویی بارگذاری نشده است") {
+                videoTitle.textContent = t.noVideo;
+            }
+        }
+
+        langSelect.onchange = (e) => {
+            setLanguage(e.target.value);
+        };
 
         // Theme Toggle Logic
         themeToggleBtn.onclick = () => {
             const currentTheme = htmlElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             htmlElement.setAttribute('data-theme', newTheme);
-            themeToggleBtn.textContent = newTheme === 'light' ? 'Dark Mode' : 'Light Mode';
+            const lang = langSelect.value;
+            const t = translations[lang] || translations.en;
+            themeToggleBtn.textContent = newTheme === 'light' ? t.darkMode : t.lightMode;
         };
-
-        // Initialize theme button text
-        themeToggleBtn.textContent = 'Dark Mode';
 
         // Load pasted link
         loadUrlBtn.onclick = () => {
             const url = videoUrlInput.value.trim();
+            const lang = langSelect.value;
+            const t = translations[lang] || translations.en;
             if (url) {
                 videoPlayer.src = url;
-                videoTitle.textContent = "Custom Link Stream";
+                videoTitle.textContent = t.customStream;
                 videoPlayer.load();
                 videoPlayer.play().catch(e => alert("Could not play video. Make sure it's a direct media link!"));
             }
