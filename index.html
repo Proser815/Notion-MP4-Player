@@ -35,7 +35,7 @@
             background-color: var(--bg-base);
             color: var(--text-main);
             margin: 0;
-            padding: 12px;
+            padding: 10px;
             display: flex;
             justify-content: center;
             -webkit-font-smoothing: antialiased;
@@ -47,7 +47,7 @@
             max-width: 500px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         /* Compact Header */
@@ -59,7 +59,7 @@
         }
 
         h1 {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             margin: 0;
             letter-spacing: -0.2px;
@@ -74,8 +74,8 @@
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 4px 8px;
-            border-radius: 8px;
+            padding: 3px 6px;
+            border-radius: 6px;
             font-size: 11px;
             font-weight: 500;
             cursor: pointer;
@@ -87,48 +87,26 @@
             background: var(--bg-hover);
         }
 
-        /* Minimal Instructions */
-        .instructions-card {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 10px 12px;
-            box-shadow: var(--shadow);
-        }
-
-        .instructions-text {
-            font-size: 11px;
-            color: var(--text-muted);
-            line-height: 1.35;
-            margin: 0;
-        }
-
-        /* Input Controls Layout */
-        .controls-container {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
+        /* Control Card */
         .control-card {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 8px 12px;
+            padding: 8px 10px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 8px;
+            gap: 6px;
             box-shadow: var(--shadow);
         }
 
         input[type="text"] {
             flex: 1;
+            min-width: 0;
             background: var(--bg-base);
             border: 1px solid transparent;
             color: var(--text-main);
-            padding: 6px 10px;
-            border-radius: 8px;
+            padding: 5px 8px;
+            border-radius: 6px;
             font-size: 11px;
             outline: none;
             transition: all 0.15s ease;
@@ -143,8 +121,8 @@
             background: var(--accent);
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 5px 10px;
+            border-radius: 6px;
             font-weight: 500;
             cursor: pointer;
             font-size: 11px;
@@ -159,13 +137,6 @@
 
         input[type="file"] {
             display: none;
-        }
-
-        .control-label {
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--text-muted);
-            white-space: nowrap;
         }
 
         /* Ultra-Clean Player */
@@ -187,7 +158,7 @@
         }
 
         .video-info {
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-top: 1px solid var(--border-color);
         }
 
@@ -221,26 +192,13 @@
             </div>
         </div>
 
-        <div class="instructions-card">
-            <p class="instructions-text" id="instText">
-                Paste a direct .mp4/.webm link or browse a file from your device.
-            </p>
-        </div>
-
-        <div class="controls-container">
-            <div class="control-card">
-                <span class="control-label" id="labelStream">URL</span>
-                <input type="text" id="videoUrlInput" placeholder="Paste link..." />
-                <button class="action-btn" id="loadUrlBtn">Load</button>
-            </div>
-
-            <div class="control-card">
-                <span class="control-label" id="fileStatusText">File</span>
-                <label class="file-label" id="labelBrowse">
-                    Browse
-                    <input type="file" id="localFileInput" accept="video/*">
-                </label>
-            </div>
+        <div class="control-card">
+            <input type="text" id="videoUrlInput" placeholder="Paste link..." />
+            <button class="action-btn" id="loadUrlBtn">Load</button>
+            <label class="file-label" id="labelBrowse">
+                File
+                <input type="file" id="localFileInput" accept="video/*">
+            </label>
         </div>
 
         <div class="player-wrapper">
@@ -257,7 +215,6 @@
         const videoUrlInput = document.getElementById('videoUrlInput');
         const loadUrlBtn = document.getElementById('loadUrlBtn');
         const localFileInput = document.getElementById('localFileInput');
-        const fileStatusText = document.getElementById('fileStatusText');
         const themeToggleBtn = document.getElementById('themeToggleBtn');
         const langSelect = document.getElementById('langSelect');
         const htmlElement = document.documentElement;
@@ -265,14 +222,14 @@
         let activeSourceType = 'none';
 
         const translations = {
-            en: { title: "Video Player", inst: "Paste a direct .mp4/.webm link or browse a file from your device.", url: "URL", load: "Load", file: "File", browse: "Browse", none: "No video loaded", custom: "Custom Stream" },
-            zh: { title: "视频播放器", inst: "粘贴直接的 .mp4/.webm 链接或从设备中选择文件。", url: "网址", load: "加载", file: "文件", browse: "浏览", none: "未加载视频", custom: "自定义流" },
-            ja: { title: "ビデオプレーヤー", inst: "直接リンクを貼り付けるか、ファイルを選択してください。", url: "URL", load: "読込", file: "ファイル", browse: "選択", none: "動画なし", custom: "カスタム" },
-            de: { title: "Video-Player", inst: "Link einfügen oder Datei vom Gerät auswählen.", url: "URL", load: "Laden", file: "Datei", browse: "Wählen", none: "Kein Video", custom: "Stream" },
-            ko: { title: "비디오 플레이어", inst: "링크를 붙여넣거나 기기에서 파일을 선택하세요.", url: "URL", load: "로드", file: "파일", browse: "찾기", none: "비디오 없음", custom: "스트림" },
-            fr: { title: "Lecteur Vidéo", inst: "Collez un lien direct ou parcourez un fichier.", url: "URL", load: "Charger", file: "Fichier", browse: "Parcourir", none: "Aucune vidéo", custom: "Flux" },
-            it: { title: "Lettore Video", inst: "Incolla un link diretto o sfoglia un file.", url: "URL", load: "Carica", file: "File", browse: "Sfoglia", none: "Nessun video", custom: "Flusso" },
-            fa: { title: "پخش کننده", inst: "لینک مستقیم را وارد کنید یا فایلی را انتخاب کنید.", url: "لینک", load: "بارگذاری", file: "فایل", browse: "انتخاب", none: "ویدیویی نیست", custom: "جریان سفارشی" }
+            en: { title: "Video Player", load: "Load", file: "File", none: "No video loaded", custom: "Custom Stream" },
+            zh: { title: "视频播放器", load: "加载", file: "文件", none: "未加载视频", custom: "自定义流" },
+            ja: { title: "ビデオプレーヤー", load: "読込", file: "ファイル", none: "動画なし", custom: "カスタム" },
+            de: { title: "Video-Player", load: "Laden", file: "Datei", none: "Kein Video", custom: "Stream" },
+            ko: { title: "비디오 플레이어", load: "로드", file: "파일", none: "비디오 없음", custom: "스트림" },
+            fr: { title: "Lecteur Vidéo", load: "Charger", file: "Fichier", none: "Aucune vidéo", custom: "Flux" },
+            it: { title: "Lettore Video", load: "Carica", file: "File", none: "Nessun video", custom: "Flusso" },
+            fa: { title: "پخش کننده", load: "بارگذاری", file: "فایل", none: "ویدیویی نیست", custom: "جریان سفارشی" }
         };
 
         function updateUI() {
@@ -280,15 +237,11 @@
             const t = translations[lang] || translations.en;
             
             document.getElementById('appTitle').textContent = t.title;
-            document.getElementById('instText').textContent = t.inst;
-            document.getElementById('labelStream').textContent = t.url;
             loadUrlBtn.textContent = t.load;
-            fileStatusText.textContent = t.file;
-            document.getElementById('labelBrowse').childNodes[0].nodeValue = t.browse + " ";
+            document.getElementById('labelBrowse').childNodes[0].nodeValue = t.file + " ";
 
             if (activeSourceType === 'none') videoTitle.textContent = t.none;
             else if (activeSourceType === 'custom') videoTitle.textContent = t.custom;
-            else if (activeSourceType === 'local') videoTitle.textContent = fileStatusText.textContent;
         }
 
         langSelect.onchange = updateUI;
@@ -311,9 +264,8 @@
             const file = e.target.files[0];
             if (file) {
                 activeSourceType = 'local';
-                fileStatusText.textContent = file.name;
+                videoTitle.textContent = file.name;
                 videoPlayer.src = URL.createObjectURL(file);
-                updateUI();
                 videoPlayer.load();
                 videoPlayer.play();
             }
