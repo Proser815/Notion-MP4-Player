@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iOS Style Video Dashboard</title>
+    <title>Clean Video Dashboard</title>
     <style>
         :root {
             --bg-base: #f2f2f7;
@@ -17,6 +17,18 @@
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
         }
 
+        [data-theme="dark"] {
+            --bg-base: #09090b;
+            --bg-surface: #121216;
+            --bg-hover: #1c1c24;
+            --border-color: #27272a;
+            --accent: #0a84ff;
+            --accent-hover: #0062cc;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-base);
@@ -26,32 +38,82 @@
             display: flex;
             justify-content: center;
             -webkit-font-smoothing: antialiased;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .dashboard {
             width: 100%;
-            max-width: 900px;
+            max-width: 650px;
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
 
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         h1 {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 600;
-            margin: 0 0 4px 0;
+            margin: 0;
             letter-spacing: -0.5px;
             color: var(--text-main);
         }
 
-        /* Control Bars Container */
+        /* Theme Toggle Button */
+        .theme-btn {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
+        }
+
+        .theme-btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--accent);
+        }
+
+        /* Instructions Card */
+        .instructions-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 14px 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .instructions-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .instructions-text {
+            font-size: 13px;
+            color: var(--text-main);
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        /* Control Containers */
         .controls-container {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
 
-        /* Input Cards */
         .control-card {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
@@ -108,19 +170,6 @@
             color: var(--text-muted);
         }
 
-        /* Layout Grid */
-        .content-layout {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 16px;
-        }
-
-        @media (max-width: 768px) {
-            .content-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
         /* Player Section */
         .player-wrapper {
             background: var(--bg-surface);
@@ -149,63 +198,22 @@
             font-weight: 600;
             color: var(--text-main);
         }
-
-        /* Sidebar Playlist */
-        .sidebar {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            max-height: 400px;
-            overflow-y: auto;
-            box-shadow: var(--shadow);
-        }
-
-        .section-title {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-        }
-
-        .playlist {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .playlist-item {
-            background: var(--bg-base);
-            border: 1px solid transparent;
-            color: var(--text-main);
-            padding: 10px 12px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 500;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .playlist-item:hover {
-            background: var(--bg-hover);
-        }
-
-        .playlist-item.active {
-            background: rgba(0, 122, 255, 0.1);
-            color: var(--accent);
-            font-weight: 600;
-        }
     </style>
 </head>
 <body>
 
     <div class="dashboard">
-        <h1>My Video Dashboard</h1>
+        <div class="header-row">
+            <h1>My Video Dashboard</h1>
+            <button class="theme-btn" id="themeToggleBtn">Switch Theme</button>
+        </div>
+
+        <div class="instructions-card">
+            <div class="instructions-title">Instructions</div>
+            <p class="instructions-text">
+                Paste a direct video link (ending in .mp4 or .webm) into the stream box and click <strong>Load Link</strong>, or pick a video file directly from your device.
+            </p>
+        </div>
 
         <div class="controls-container">
             <div class="control-card">
@@ -223,17 +231,10 @@
             </div>
         </div>
 
-        <div class="content-layout">
-            <div class="player-wrapper">
-                <video id="mainVideoPlayer" controls playsinline></video>
-                <div class="video-info">
-                    <div class="video-title" id="currentVideoTitle">Select a preset or load a source</div>
-                </div>
-            </div>
-
-            <div class="sidebar">
-                <div class="section-title">Presets</div>
-                <div class="playlist" id="playlistContainer"></div>
+        <div class="player-wrapper">
+            <video id="mainVideoPlayer" controls playsinline></video>
+            <div class="video-info">
+                <div class="video-title" id="currentVideoTitle">No video loaded</div>
             </div>
         </div>
     </div>
@@ -241,44 +242,23 @@
     <script>
         const videoPlayer = document.getElementById('mainVideoPlayer');
         const videoTitle = document.getElementById('currentVideoTitle');
-        const playlistContainer = document.getElementById('playlistContainer');
         const videoUrlInput = document.getElementById('videoUrlInput');
         const loadUrlBtn = document.getElementById('loadUrlBtn');
         const localFileInput = document.getElementById('localFileInput');
         const fileStatusText = document.getElementById('fileStatusText');
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const htmlElement = document.documentElement;
 
-        // Sample presets
-        const samplePlaylist = [
-            { title: "Big Buck Bunny", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
-            { title: "Sample Video 2", url: "https://www.w3schools.com/html/movie.mp4" }
-        ];
+        // Theme Toggle Logic
+        themeToggleBtn.onclick = () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            htmlElement.setAttribute('data-theme', newTheme);
+            themeToggleBtn.textContent = newTheme === 'light' ? 'Dark Mode' : 'Light Mode';
+        };
 
-        // Build preset playlist UI
-        samplePlaylist.forEach((item, index) => {
-            const btn = document.createElement('button');
-            btn.className = `playlist-item ${index === 0 ? 'active' : ''}`;
-            btn.textContent = item.title;
-            
-            btn.onclick = () => {
-                document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
-                btn.classList.add('active');
-                
-                videoUrlInput.value = item.url;
-                videoPlayer.src = item.url;
-                videoTitle.textContent = item.title;
-                videoPlayer.load();
-                videoPlayer.play().catch(e => console.log("Auto-play prevented:", e));
-            };
-
-            playlistContainer.appendChild(btn);
-        });
-
-        // Initialize with the first sample
-        if (samplePlaylist.length > 0) {
-            videoPlayer.src = samplePlaylist[0].url;
-            videoTitle.textContent = samplePlaylist[0].title;
-            videoUrlInput.value = samplePlaylist[0].url;
-        }
+        // Initialize theme button text
+        themeToggleBtn.textContent = 'Dark Mode';
 
         // Load pasted link
         loadUrlBtn.onclick = () => {
@@ -286,7 +266,6 @@
             if (url) {
                 videoPlayer.src = url;
                 videoTitle.textContent = "Custom Link Stream";
-                document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
                 videoPlayer.load();
                 videoPlayer.play().catch(e => alert("Could not play video. Make sure it's a direct media link!"));
             }
@@ -300,7 +279,6 @@
                 videoPlayer.src = fileURL;
                 videoTitle.textContent = `Local File: ${file.name}`;
                 fileStatusText.textContent = `Loaded: ${file.name}`;
-                document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
                 videoPlayer.load();
                 videoPlayer.play();
             }
